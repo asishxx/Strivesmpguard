@@ -1,4 +1,4 @@
-const {Client, GatewayIntentBits, Collection, AttachmentBuilder, createWelcomeCard} = require('discord.js');
+const {Client, GatewayIntentBits, Collection, AttachmentBuilder, createWelcomeCard, ActivityType} = require('discord.js');
 
 const client = new Client({
     intents:[GatewayIntentBits.Guilds,
@@ -240,13 +240,13 @@ client.once('clientReady', () => {
     console.log('StrivesmpGuard is online!');
 
     client.user.setPresence({
-    status: "online",
-    activities: [
-        {
-            name: "Protecting the server",
-            type: 3 // Watching
-        }
-    ]
+        status: "online",
+        activities: [
+            {
+                name: "Protecting the server",
+                type: ActivityType.Watching
+            }
+        ]
     });
 
     memberCounter(client);
