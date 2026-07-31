@@ -77,43 +77,32 @@ client.on("guildMemberAdd", async (member) => {
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
     // Avatar
-const avatar = await loadImage(
-    member.user.displayAvatarURL({
-        extension: "png",
-        size: 512,
-        forceStatic: true
-    })
-);
+    const avatar = await loadImage(
+        member.user.displayAvatarURL({
+            extension: "png",
+            size: 512,
+            forceStatic: true
+        })
+    );
 
-ctx.save();
-ctx.beginPath();
-ctx.arc(278, 406, 172, 0, Math.PI * 2); // Avatar radius
-ctx.closePath();
-ctx.clip();
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(170, 225, 100, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
 
-ctx.drawImage(
-    avatar,
-    106, // X
-    234, // Y
-    344, // Width
-    344  // Height
-);
+    ctx.drawImage(avatar, 70, 125, 200, 200);
 
-ctx.restore();
-// Avatar border
-ctx.beginPath();
-ctx.arc(278, 406, 184, 0, Math.PI * 2); // Border radius
-ctx.lineWidth = 10;
-ctx.strokeStyle = "#00BFFF";
-ctx.shadowColor = "#66CCFF";
-ctx.shadowBlur = 18;
-ctx.stroke();
-ctx.shadowBlur = 0;
-    // Welcome text
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 52px Sans";
-    const now = new Date();
-    const timestamp = now.toLocaleString("en-IN", {
+    ctx.restore();
+
+    // Avatar border
+    ctx.beginPath();
+    ctx.arc(170, 225, 105, 0, Math.PI * 2);
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = "#00bfff";
+    ctx.stroke();
+
+    const timestamp = new Date().toLocaleString("en-IN", {
         day: "2-digit",
         month: "short",
         year: "numeric",
@@ -148,37 +137,11 @@ ctx.shadowBlur = 0;
 
     if (!channel) return;
 
-    const embed = new EmbedBuilder()
-    .setColor("#2B2D31")
-    .setTitle("🎉 Welcome to Strive SMP!")
-    .setDescription(
-`**We're so happy to have you join our community! ❤️**
-
-📜 **Read the Rules ➜** <#RULES_CHANNEL_ID>
-
-📢 **Latest Updates ➜** <#ANNOUNCEMENT_CHANNEL_ID>
-
-🌍 **Minecraft IP ➜**
-\`play.strivesmp.com\`
-
-🎫 **Need Help? ➜**
-<#TICKET_CHANNEL_ID>
-
-💖 Enjoy your stay, make new friends, and have an amazing time in **Strive SMP!**
-
-🌟 **Member #${member.guild.memberCount}**`
-    )
-    .setImage("attachment://welcome.png")
-    .setFooter({
-        text: `${member.guild.name} • Welcome!`
-    })
-    .setTimestamp();
-
-await channel.send({
-    content: `Welcome ${member} (${member.user.tag}) to **${member.guild.name}**! 🎉`,
-    embeds: [embed],
-    files: [attachment]
-});
+    channel.send({
+        content: `🎉 Welcome ${member} to **${member.guild.name}**!`,
+        files: [attachment]
+        
+    });
     
 });
 
