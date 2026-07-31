@@ -1,4 +1,4 @@
-const {Client, GatewayIntentBits, Collection, AttachmentBuilder, createWelcomeCard, ActivityType} = require('discord.js');
+const {Client, GatewayIntentBits, Collection, AttachmentBuilder, createWelcomeCard, ActivityType, EmbedBuilder} = require('discord.js');
 
 const client = new Client({
     intents:[GatewayIntentBits.Guilds,
@@ -116,13 +116,6 @@ client.on("guildMemberAdd", async (member) => {
     ctx.fillStyle = "#CFCFCF";
     ctx.textAlign = "right";
 
-    ctx.fillText(
-        `Joined: ${timestamp}`,
-        990,
-        420
-    );
-
-
     // Convert to attachment
     const attachment = new AttachmentBuilder(
         await canvas.encode("png"),
@@ -137,11 +130,37 @@ client.on("guildMemberAdd", async (member) => {
 
     if (!channel) return;
 
-    channel.send({
-        content: `🎉 Welcome ${member} to **${member.guild.name}**!`,
-        files: [attachment]
-        
-    });
+    const embed = new EmbedBuilder()
+    .setColor("#2B2D31")
+    .setTitle("🎉 Welcome to Strive SMP!")
+    .setDescription(
+`**We're so happy to have you join our community! ❤️**
+
+📜 **Read the Rules ➜** <#RULES_CHANNEL_ID>
+
+📢 **Latest Updates ➜** <#ANNOUNCEMENT_CHANNEL_ID>
+
+🌍 **Minecraft IP ➜**
+\`play.strivesmp.com\`
+
+🎫 **Need Help? ➜**
+<#TICKET_CHANNEL_ID>
+
+💖 Enjoy your stay, make new friends, and have an amazing time in **Strive SMP!**
+
+🌟 **Member #${member.guild.memberCount}**`
+    )
+    .setImage("attachment://welcome.png")
+    .setFooter({
+        text: `${member.guild.name} • Welcome!`
+    })
+    .setTimestamp();
+
+await channel.send({
+    content: `Welcome ${member} (${member.user.tag}) to **${member.guild.name}**! 🎉`,
+    embeds: [embed],
+    files: [attachment]
+});
     
 });
 
