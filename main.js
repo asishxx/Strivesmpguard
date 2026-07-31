@@ -152,7 +152,7 @@ client.on("guildMemberAdd", async (member) => {
     )
     .setImage("attachment://welcome.png")
     .setFooter({
-        text: `${member.guild.name} • Welcome!`
+        text: `${member.guild.memberCount} • Member`
     })
     .setTimestamp();
 
