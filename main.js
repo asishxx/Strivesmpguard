@@ -238,6 +238,8 @@ client.on("messageCreate", (message) => {
 
 client.once("clientReady", async () => {
     console.log("StrivesmpGuard is online!");
+    console.log("Tag:", client.user.tag);
+    console.log("ID:", client.user.id);
 
     await client.user.setPresence({
         status: "online",
