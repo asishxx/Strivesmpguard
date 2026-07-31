@@ -60,8 +60,9 @@ client.on("guildMemberAdd", async (member) => {
     const ctx = canvas.getContext("2d");
 
     // Background image
+    const path = require("path");
     const background = await loadImage(
-        "https://kommodo.ai/i/xhDUddYd3p2N2CYfuvBn"
+    path.join(__dirname, "assets", "welcomebg.png")
     );
 
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
