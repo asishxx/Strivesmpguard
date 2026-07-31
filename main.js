@@ -236,10 +236,10 @@ client.on("messageCreate", (message) => {
     }
 });
 
-client.once('clientReady', () => {
-    console.log('StrivesmpGuard is online!');
+client.once("clientReady", async () => {
+    console.log("StrivesmpGuard is online!");
 
-    client.user.setPresence({
+    await client.user.setPresence({
         status: "online",
         activities: [
             {
@@ -248,6 +248,8 @@ client.once('clientReady', () => {
             }
         ]
     });
+
+    console.log("Presence:", client.user.presence?.status);
 
     memberCounter(client);
 });
