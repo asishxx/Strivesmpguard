@@ -146,13 +146,11 @@ client.on("guildMemberAdd", async (member) => {
 🎫 **Need Help? ➜**
 <#1532032502904914120>
 
-💖 Enjoy your stay, make new friends, and have an amazing time in **Strive SMP!**
-
-🌟 **Member #${member.guild.memberCount}**`
+💖 Enjoy your stay, make new friends, and have an amazing time in **Strive SMP!**`
     )
     .setImage("attachment://welcome.png")
     .setFooter({
-        text: `${member.guild.memberCount} • Member`
+        text: `${member.guild.name} • Member #${member.guild.memberCount}`
     })
     .setTimestamp();
 
