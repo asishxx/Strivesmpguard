@@ -61,7 +61,7 @@ client.on("guildMemberAdd", async (member) => {
 
     // Background image
     const background = await loadImage(
-        "https://m.media-amazon.com/images/I/61OFtTP3A0L._AC_UF1000,1000_QL80_.jpg"
+        "https://kommodo.ai/i/xhDUddYd3p2N2CYfuvBn"
     );
 
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
