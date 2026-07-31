@@ -238,6 +238,9 @@ client.on("messageCreate", (message) => {
 
 client.once('clientReady', () => {
     console.log('StrivesmpGuard is online!');
+
+    client.user.setStatus('online');
+
     memberCounter(client);
 });
 
