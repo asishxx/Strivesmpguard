@@ -87,67 +87,25 @@ client.on("guildMemberAdd", async (member) => {
 
     ctx.save();
     ctx.beginPath();
-    ctx.arc(170, 225, 100, 0, Math.PI * 2);
+    ctx.arc(278, 406, 168, 0, Math.PI * 2);
     ctx.closePath();
     ctx.clip();
 
-    ctx.drawImage(avatar, 70, 125, 200, 200);
+    ctx.drawImage(avatar, 110, 238, 336, 336);
 
     ctx.restore();
 
     // Avatar border
     ctx.beginPath();
-    ctx.arc(170, 225, 105, 0, Math.PI * 2);
+    ctx.arc(278, 406, 174, 0, Math.PI * 2);
     ctx.lineWidth = 8;
-    ctx.strokeStyle = "#00bfff";
+    ctx.strokeStyle = "#00BFFF";
     ctx.stroke();
 
     // Welcome text
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 52px Sans";
-
-    ctx.fillText("WELCOME!", 330, 130);
-
-    // Username
-    ctx.font = "bold 42px Sans";
-
-    ctx.fillStyle = "#00ffff";
-
-    ctx.fillText(member.user.username, 330, 200);
-
-    // Server name
-    ctx.font = "30px Sans";
-
-    ctx.fillStyle = "#ffffff";
-
-    ctx.fillText(
-        `Welcome to ${member.guild.name}`,
-        330,
-        260
-    );
-
-    // Member count
-    ctx.fillStyle = "#FFD700";
-
-    ctx.fillText(
-        `Member #${member.guild.memberCount}`,
-        330,
-        320
-    );
-
-    // Footer
-    ctx.font = "24px Sans";
-
-    ctx.fillStyle = "#ffffff";
-
-    ctx.fillText(
-        "Check rules of the server in rules channel and enjoy your stay!",
-        330,
-        380
-        
-    );
     const now = new Date();
-
     const timestamp = now.toLocaleString("en-IN", {
         day: "2-digit",
         month: "short",
@@ -183,11 +141,37 @@ client.on("guildMemberAdd", async (member) => {
 
     if (!channel) return;
 
-    channel.send({
-        content: `🎉 Welcome ${member} to **${member.guild.name}**!`,
-        files: [attachment]
-        
-    });
+    const embed = new EmbedBuilder()
+    .setColor("#2B2D31")
+    .setTitle("🎉 Welcome to Strive SMP!")
+    .setDescription(
+`**We're so happy to have you join our community! ❤️**
+
+📜 **Read the Rules ➜** <#RULES_CHANNEL_ID>
+
+📢 **Latest Updates ➜** <#ANNOUNCEMENT_CHANNEL_ID>
+
+🌍 **Minecraft IP ➜**
+\`play.strivesmp.com\`
+
+🎫 **Need Help? ➜**
+<#TICKET_CHANNEL_ID>
+
+💖 Enjoy your stay, make new friends, and have an amazing time in **Strive SMP!**
+
+🌟 **Member #${member.guild.memberCount}**`
+    )
+    .setImage("attachment://welcome.png")
+    .setFooter({
+        text: `${member.guild.name} • Welcome!`
+    })
+    .setTimestamp();
+
+await channel.send({
+    content: `Welcome ${member} (${member.user.tag}) to **${member.guild.name}**! 🎉`,
+    embeds: [embed],
+    files: [attachment]
+});
     
 });
 
