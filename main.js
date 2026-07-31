@@ -136,15 +136,15 @@ client.on("guildMemberAdd", async (member) => {
     .setDescription(
 `**We're so happy to have you join our community! ❤️**
 
-📜 **Read the Rules ➜** <#RULES_CHANNEL_ID>
+📜 **Read the Rules ➜** <#1532032502636740866>
 
-📢 **Latest Updates ➜** <#ANNOUNCEMENT_CHANNEL_ID>
+📢 **Latest Updates ➜** <#1532032502636740868>
 
-🌍 **Minecraft IP ➜**
-\`play.strivesmp.com\`
+🌍 **Minecraft Java IP and Port ➜**
+\`play.strivesmp.com:25566\`
 
 🎫 **Need Help? ➜**
-<#TICKET_CHANNEL_ID>
+<#1532032502904914120>
 
 💖 Enjoy your stay, make new friends, and have an amazing time in **Strive SMP!**
 
