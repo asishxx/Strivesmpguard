@@ -1,44 +1,85 @@
-const { status } = require("minecraft-server-util");
 const { EmbedBuilder } = require("discord.js");
+const { status } = require("minecraft-server-util");
 
 module.exports = {
     name: "status",
-    description: "Shows Minecraft server status.",
+    aliases: ["server", "mc"],
 
     async execute(message) {
 
+        const HOST = "keep-ii.gl.joinmc.link";
+        const PORT = 25565;
+
         try {
 
-            const response = await status("keep-ii.gl.joinmc.link", 25566);
+            const result = await status(HOST, PORT, {
+                timeout: 5000
+            });
+
+            const motd = result.motd?.clean
+                ? Array.isArray(result.motd.clean)
+                    ? result.motd.clean.join("\n")
+                    : result.motd.clean
+                : "No MOTD";
+
+            const players = result.players?.sample?.length
+                ? result.players.sample.map(p => `• ${p.name}`).join("\n")
+                : "No players online.";
 
             const embed = new EmbedBuilder()
-                .setColor("Green")
-                .setTitle("🟢 StriveSMP Server Status")
+                .setColor("#00ff00")
+                .setTitle("🟢 StriveSMP Server")
+                .setDescription(`**${HOST}**`)
                 .addFields(
                     {
-                        name: "🌍 Server",
-                        value: "keep-ii.gl.joinmc.link:25566",
-                        inline: false
-                    },
-                    {
-                        name: "👥 Players",
-                        value: `${response.players.online}/${response.players.max}`,
+                        name: "Status",
+                        value: "🟢 Online",
                         inline: true
                     },
                     {
-                        name: "🎮 Version",
-                        value: response.version.name,
+                        name: "Players",
+                        value: `${result.players.online}/${result.players.max}`,
                         inline: true
                     },
                     {
-                        name: "📝 MOTD",
-                        value: response.motd.clean.join("\n"),
-                        inline: false
+                        name: "Version",
+                        value: result.version.name,
+                        inline: true
+                    },
+                    {
+                        name: "Protocol",
+                        value: `${result.version.protocol}`,
+                        inline: true
+                    },
+                    {
+                        name: "Latency",
+                        value: `${result.roundTripLatency} ms`,
+                        inline: true
+                    },
+                    {
+                        name: "Host",
+                        value: HOST,
+                        inline: true
+                    },
+                    {
+                        name: "MOTD",
+                        value: motd.substring(0, 1024)
+                    },
+                    {
+                        name: "Online Players",
+                        value: players.substring(0, 1024)
                     }
                 )
-                .setTimestamp();
+                .setTimestamp()
+                .setFooter({
+                    text: "Minecraft Server Status"
+                });
 
-            message.channel.send({
+            if (result.favicon) {
+                embed.setThumbnail(result.favicon);
+            }
+
+            return message.reply({
                 embeds: [embed]
             });
 
@@ -50,13 +91,23 @@ module.exports = {
                 .setColor("Red")
                 .setTitle("🔴 StriveSMP Server")
                 .setDescription("Server is Offline or cannot be reached.")
+                .addFields(
+                    {
+                        name: "Host",
+                        value: HOST,
+                        inline: true
+                    },
+                    {
+                        name: "Port",
+                        value: `${PORT}`,
+                        inline: true
+                    }
+                )
                 .setTimestamp();
 
-            message.channel.send({
+            return message.reply({
                 embeds: [embed]
             });
-
         }
-
     }
 };

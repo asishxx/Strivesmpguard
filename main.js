@@ -141,7 +141,7 @@ client.on("guildMemberAdd", async (member) => {
 📢 **Latest Updates ➜** <#1532032502636740868>
 
 🌍 **Minecraft Java IP and Port ➜**
-\`play.strivesmp.com:25566\`
+\`keep-ii.gl.joinmc.link:25566\`
 
 🎫 **Need Help? ➜**
 <#1532032502904914120>
@@ -163,14 +163,20 @@ await channel.send({
 });
 
 // Commands
-client.on("messageCreate", (message) => {
-    console.log("messageCreate event fired");
+client.on("messageCreate", async message => {
 
     if (message.author.bot) return;
     if (!message.content.startsWith(prefix)) return;
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
+
+    const cmd = client.commands.get(command)
+        || client.commands.find(c => c.aliases && c.aliases.includes(command));
+
+    if (!cmd) return;
+
+    cmd.execute(message, args);
 
     if (command === "ping") 
     {
@@ -218,8 +224,8 @@ client.once("clientReady", async () => {
         status: "online",
         activities: [
             {
-                name: "Protecting the server",
-                type: ActivityType.Watching
+                name: "Strive SMP",
+                type: ActivityType.Playing
             }
         ]
     });
