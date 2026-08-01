@@ -224,7 +224,7 @@ client.once("clientReady", async () => {
         status: "online",
         activities: [
             {
-                name: "Strive SMP",
+                name: "Strive SMP | By <@1104803956745588768>",
                 type: ActivityType.Playing
             }
         ]
