@@ -171,11 +171,6 @@ client.on("messageCreate", async message => {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
 
-    const cmd = client.commands.get(command)
-        || client.commands.find(c => c.aliases && c.aliases.includes(command));
-
-    if (!cmd) return;
-
     cmd.execute(message, args);
 
     if (command === "ping") 
