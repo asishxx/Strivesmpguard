@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
-const { status } = require("minecraft-server-util");
+const axios = require("axios");
 
 module.exports = {
     name: "status",
@@ -7,29 +7,62 @@ module.exports = {
 
     async execute(message) {
 
-        const HOST = "keep-ii.gl.joinmc.link";
-        const PORT = 25565;
+        const server = "keep-ii.gl.joinmc.link";
 
         try {
 
-            const result = await status(HOST, PORT, {
-                timeout: 5000
-            });
+            const response = await axios.get(
+                `https://api.mcstatus.io/v2/status/java/${server}`,
+                {
+                    timeout: 10000
+                }
+            );
 
-            const motd = result.motd?.clean
-                ? Array.isArray(result.motd.clean)
-                    ? result.motd.clean.join("\n")
-                    : result.motd.clean
-                : "No MOTD";
+            const data = response.data;
 
-            const players = result.players?.sample?.length
-                ? result.players.sample.map(p => `• ${p.name}`).join("\n")
-                : "No players online.";
+            if (!data.online) {
+                return message.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor("Red")
+                            .setTitle("🔴 Strive SMP Server")
+                            .setDescription("Server is currently **Offline**.")
+                            .addFields(
+                                {
+                                    name: "Hostname",
+                                    value: server,
+                                    inline: true
+                                },
+                                {
+                                    name: "IP Address",
+                                    value: data.ip_address || "Unknown",
+                                    inline: true
+                                }
+                            )
+                            .setTimestamp()
+                    ]
+                });
+            }
+
+            let motd = "No MOTD";
+
+            if (data.motd?.clean) {
+                motd = Array.isArray(data.motd.clean)
+                    ? data.motd.clean.join("\n")
+                    : data.motd.clean;
+            }
+
+            const players =
+                data.players?.list?.length
+                    ? data.players.list
+                          .map(player => `• ${player.name_clean || player.name}`)
+                          .join("\n")
+                    : "No players online.";
 
             const embed = new EmbedBuilder()
-                .setColor("#00ff00")
-                .setTitle("🟢 StriveSMP Server")
-                .setDescription(`**${HOST}**`)
+                .setColor("Green")
+                .setTitle("🟢 Strive SMP Server Status")
+                .setDescription(`**${server}**`)
                 .addFields(
                     {
                         name: "Status",
@@ -38,27 +71,42 @@ module.exports = {
                     },
                     {
                         name: "Players",
-                        value: `${result.players.online}/${result.players.max}`,
+                        value: `${data.players?.online ?? 0}/${data.players?.max ?? 0}`,
                         inline: true
                     },
                     {
                         name: "Version",
-                        value: result.version.name,
+                        value: data.version?.name_clean || "Unknown",
                         inline: true
                     },
                     {
-                        name: "Protocol",
-                        value: `${result.version.protocol}`,
+                        name: "Ping",
+                        value: `${data.latency ?? "N/A"} ms`,
                         inline: true
                     },
                     {
-                        name: "Latency",
-                        value: `${result.roundTripLatency} ms`,
+                        name: "Software",
+                        value: data.software || data.brand || "Unknown",
                         inline: true
                     },
                     {
-                        name: "Host",
-                        value: HOST,
+                        name: "Hostname",
+                        value: data.host || server,
+                        inline: true
+                    },
+                    {
+                        name: "IP Address",
+                        value: data.ip_address || "Unknown",
+                        inline: true
+                    },
+                    {
+                        name: "Port",
+                        value: `${data.port || 25565}`,
+                        inline: true
+                    },
+                    {
+                        name: "📢 Server Info",
+                        value: "<#1532032502636740868>",
                         inline: true
                     },
                     {
@@ -70,13 +118,13 @@ module.exports = {
                         value: players.substring(0, 1024)
                     }
                 )
-                .setTimestamp()
                 .setFooter({
-                    text: "Minecraft Server Status"
-                });
+                    text: "Powered by mcstatus.io"
+                })
+                .setTimestamp();
 
-            if (result.favicon) {
-                embed.setThumbnail(result.favicon);
+            if (data.icon) {
+                embed.setThumbnail(`data:image/png;base64,${data.icon}`);
             }
 
             return message.reply({
@@ -87,26 +135,14 @@ module.exports = {
 
             console.error(err);
 
-            const embed = new EmbedBuilder()
-                .setColor("Red")
-                .setTitle("🔴 StriveSMP Server")
-                .setDescription("Server is Offline or cannot be reached.")
-                .addFields(
-                    {
-                        name: "Host",
-                        value: HOST,
-                        inline: true
-                    },
-                    {
-                        name: "Port",
-                        value: `${PORT}`,
-                        inline: true
-                    }
-                )
-                .setTimestamp();
-
             return message.reply({
-                embeds: [embed]
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor("Red")
+                        .setTitle("❌ Error")
+                        .setDescription("Unable to fetch Minecraft server status.")
+                        .setTimestamp()
+                ]
             });
         }
     }
