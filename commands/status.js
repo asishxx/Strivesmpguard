@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const axios = require("axios");
 
 module.exports = {
@@ -21,6 +21,7 @@ module.exports = {
             const data = response.data;
 
             if (!data.online) {
+
                 return message.reply({
                     embeds: [
                         new EmbedBuilder()
@@ -37,11 +38,17 @@ module.exports = {
                                     name: "IP Address",
                                     value: data.ip_address || "Unknown",
                                     inline: true
+                                },
+                                {
+                                    name: "Port",
+                                    value: `${data.port || 25566}`,
+                                    inline: true
                                 }
                             )
                             .setTimestamp()
                     ]
                 });
+
             }
 
             let motd = "No MOTD";
@@ -55,8 +62,8 @@ module.exports = {
             const players =
                 data.players?.list?.length
                     ? data.players.list
-                          .map(player => `• ${player.name_clean || player.name}`)
-                          .join("\n")
+                        .map(player => `• ${player.name_clean || player.name}`)
+                        .join("\n")
                     : "No players online.";
 
             const embed = new EmbedBuilder()
@@ -85,11 +92,6 @@ module.exports = {
                         inline: true
                     },
                     {
-                        name: "Software",
-                        value: data.software || data.brand || "Unknown",
-                        inline: true
-                    },
-                    {
                         name: "Hostname",
                         value: data.host || server,
                         inline: true
@@ -101,7 +103,7 @@ module.exports = {
                     },
                     {
                         name: "Port",
-                        value: `${data.port || 25565}`,
+                        value: `${data.port || 25566}`,
                         inline: true
                     },
                     {
@@ -123,12 +125,29 @@ module.exports = {
                 })
                 .setTimestamp();
 
+            const files = [];
+
             if (data.icon) {
-                embed.setThumbnail(`data:image/png;base64,${data.icon}`);
+
+                const base64 = data.icon.replace(
+                    /^data:image\/png;base64,/,
+                    ""
+                );
+
+                const buffer = Buffer.from(base64, "base64");
+
+                const attachment = new AttachmentBuilder(buffer, {
+                    name: "server-icon.png"
+                });
+
+                embed.setThumbnail("attachment://server-icon.png");
+
+                files.push(attachment);
             }
 
             return message.reply({
-                embeds: [embed]
+                embeds: [embed],
+                files
             });
 
         } catch (err) {
@@ -144,6 +163,8 @@ module.exports = {
                         .setTimestamp()
                 ]
             });
+
         }
+
     }
 };
