@@ -3,6 +3,6 @@ module.exports = {
     description: 'Send a youtube link!',
     execute(message, args) {
         console.log("youtube command executed");
-        message.reply("UCi3WIwmL95iKbfdd6RiTUjQ");
+        message.reply('https://youtube.com/@strivesmp44?si=5yVE7pe90u9vvzMh');
     }
 }
