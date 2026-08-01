@@ -141,10 +141,9 @@ client.on("guildMemberAdd", async (member) => {
 📢 **Latest Updates ➜** <#1532032502636740868>
 
 🌍 **Minecraft Java IP and Port ➜**
-\`keep-ii.gl.joinmc.link:25566\`
+\`keep-ii.gl.joinmc.link:9470\`
 
-🎫 **Need Help? ➜**
-<#1532032502904914120>
+🎫 **Need Help? ➜**<#1532032502904914120>
 
 💖 Enjoy your stay, make new friends, and have an amazing time in **Strive SMP!**`
     )
