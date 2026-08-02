@@ -1,10 +1,18 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 
 module.exports = {
     name: 'rules',
     description: 'Displays the server rules.',
 
     execute(message, args) {
+
+        const logo = new AttachmentBuilder('./assets/strivelogo.png', {
+            name: 'strivelogo.png'
+        });
+
+        const banner = new AttachmentBuilder('./assets/strive banner.png', {
+            name: 'strivebanner.png'
+        });
 
         const embed = new EmbedBuilder()
             .setColor('#5865F2')
@@ -35,15 +43,16 @@ module.exports = {
                     value: 'Respect staff decisions. If you have an issue, create a support ticket.'
                 }
             )
-            .setThumbnail('https://cdn.discordapp.com/embed/avatars/0.png')
-            .setImage('https://m.media-amazon.com/images/I/61OFtTP3A0L._AC_UF1000,1000_QL80_.jpg')
+            .setThumbnail('attachment://strivelogo.png')
+            .setImage('attachment://strivebanner.png')
             .setFooter({
                 text: 'Thank you for being part of StriveSMP ❤️'
             })
             .setTimestamp();
 
         message.reply({
-            embeds: [embed]
+            embeds: [embed],
+            files: [logo, banner]
         });
     }
 };
