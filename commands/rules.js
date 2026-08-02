@@ -1,3 +1,4 @@
+console.log("rules.js loaded");
 const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 
 module.exports = {
@@ -5,12 +6,13 @@ module.exports = {
     description: 'Displays the server rules.',
 
     execute(message, args) {
+        console.log("!rules command executed");
 
         const logo = new AttachmentBuilder('./assets/strivelogo.png', {
             name: 'strivelogo.png'
         });
 
-        const banner = new AttachmentBuilder('./assets/strive banner.png', {
+        const banner = new AttachmentBuilder('./assets/strivebanner.png', {
             name: 'strivebanner.png'
         });
 
