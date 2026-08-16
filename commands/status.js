@@ -92,12 +92,12 @@ module.exports = {
                         inline: true
                     },
                     {
-                        name: "Hostname",
+                        name: "Java IP",
                         value: data.host || server,
                         inline: true
                     },
                     {
-                        name: "IP Address",
+                        name: "Bedrock IP",
                         value: data.ip_address || "Unknown",
                         inline: true
                     },
@@ -115,10 +115,6 @@ module.exports = {
                         name: "MOTD",
                         value: motd.substring(0, 1024)
                     },
-                    {
-                        name: "Online Players",
-                        value: players.substring(0, 1024)
-                    }
                 )
                 .setFooter({
                     text: "Powered by mcstatus.io"
