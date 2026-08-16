@@ -26,7 +26,7 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setColor("Red")
-                            .setTitle("<a:online:1538419493137682432> Strive SMP Server")
+                            .setTitle("🔴 Strive SMP Server")
                             .setDescription("Server is currently **Offline**.")
                             .addFields(
                                 {
