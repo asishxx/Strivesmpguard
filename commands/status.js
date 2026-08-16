@@ -26,7 +26,7 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setColor("Red")
-                            .setTitle("<a:online:1538401822618820668> Strive SMP Server")
+                            .setTitle("<a:online:1538419493137682432> Strive SMP Server")
                             .setDescription("Server is currently **Offline**.")
                             .addFields(
                                 {
@@ -68,7 +68,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor("Green")
-                .setTitle("<a:online:1538401822618820668> Strive SMP Server Status")
+                .setTitle("<a:online:1538419493137682432> Strive SMP Server Status")
                 .setDescription(`**${server}**`)
                 .addFields(
                     {
