@@ -30,12 +30,12 @@ module.exports = {
                             .setDescription("Server is currently **Offline**.")
                             .addFields(
                                 {
-                                    name: "Hostname",
+                                    name: "Java IP",
                                     value: server,
                                     inline: true
                                 },
                                 {
-                                    name: "IP Address",
+                                    name: "Bedrock IP",
                                     value: data.ip_address || "Unknown",
                                     inline: true
                                 },
@@ -68,7 +68,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor("Green")
-                .setTitle("🟢 Strive SMP Server Status")
+                .setTitle(":online: Strive SMP Server Status")
                 .setDescription(`**${server}**`)
                 .addFields(
                     {
