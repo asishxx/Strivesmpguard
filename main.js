@@ -1,5 +1,5 @@
 const {Client, GatewayIntentBits, Collection, AttachmentBuilder, createWelcomeCard, ActivityType, EmbedBuilder} = require('discord.js');
-
+require("dotenv").config({ path: "./bottoken.env" });
 const client = new Client({
     intents:[GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers, // Privileged
@@ -26,6 +26,14 @@ const {
     createCanvas,
     loadImage
 } = require("@napi-rs/canvas");
+
+const { GoogleGenAI } = require("@google/genai");
+require("dotenv").config({ path: "./bottoken.env" });
+
+const genAI = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY
+});
+const { getStrivePrompt } = require("./striveai");
 
 // Bot prefix
 const prefix = "!";
@@ -160,6 +168,13 @@ await channel.send({
 });
     
 });
+/* ==========================================
+   STRIVE AI
+   ========================================== */
+
+async function askAI(question, username) { try { const response = await genAI.models.generateContent({ model: "gemini-3.5-flash-lite", contents: question, config: { systemInstruction: getStrivePrompt(username) } }); 
+return response.text; } catch (error) { console.error( "❌ Gemini API Error:", error ); throw error; } }
+
 
 // Commands
 client.on("messageCreate", async message => {
@@ -204,6 +219,54 @@ client.on("messageCreate", async message => {
     else if (command === "status") {
     client.commands.get("status").execute(message);
     }
+    else if (command === "ai") {
+
+    const question = args.join(" ");
+
+    if (!question) {
+        return message.reply(
+            "🤖 Please ask me something!\nExample: `!ai how do I join Strive SMP?`"
+        );
+    }
+
+    try {
+
+        await message.channel.sendTyping();
+
+        const answer = await askAI(
+            question,
+            message.author.username
+        );
+
+        if (!answer) {
+            return message.reply(
+                "❌ I couldn't generate a response."
+            );
+        }
+
+        // Discord message limit is 2000 characters
+        if (answer.length <= 2000) {
+
+            await message.reply(answer);
+
+        } else {
+
+            const chunks = answer.match(/[\s\S]{1,1900}/g);
+
+            for (const chunk of chunks) {
+                await message.channel.send(chunk);
+            }
+        }
+
+    } catch (error) {
+
+        console.error("Gemini Error:", error);
+
+        await message.reply(
+            "❌ Sorry, I couldn't connect to StriveAI right now."
+        );
+    }
+}
 });
 
 client.once("clientReady", async () => {
@@ -227,6 +290,5 @@ client.once("clientReady", async () => {
     memberCounter(client);
 });
 
-require("dotenv").config({ path: "./bottoken.env" });
 
 client.login(process.env.TOKEN);
