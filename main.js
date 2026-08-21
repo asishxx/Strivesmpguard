@@ -34,6 +34,7 @@ const genAI = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 });
 const { getStrivePrompt } = require("./striveai");
+const afkCommand = require("./commands/afk");
 
 // Bot prefix
 const prefix = "!";
@@ -180,6 +181,152 @@ return response.text; } catch (error) { console.error( "❌ Gemini API Error:", 
 client.on("messageCreate", async message => {
 
     if (message.author.bot) return;
+    // ==========================================
+// AFK SYSTEM
+// ==========================================
+
+const afkUser = afkCommand.afkUsers.get(message.author.id);
+
+if (afkUser) {
+
+    const duration = afkCommand.formatDuration(
+        Date.now() - afkUser.timestamp
+    );
+
+    afkCommand.afkUsers.delete(message.author.id);
+
+    const embed = new EmbedBuilder()
+        .setColor("#57F287")
+        .setAuthor({
+            name: `${message.author.username} is back`,
+            iconURL: message.author.displayAvatarURL({
+                extension: "png",
+                size: 256
+            })
+        })
+        .setTitle("👋 Welcome Back!")
+        .setDescription(
+            `<@${message.author.id}> is no longer AFK.`
+        )
+        .addFields(
+            {
+                name: "👤 User",
+                value: `<@${message.author.id}>`,
+                inline: true
+            },
+            {
+                name: "⏱️ AFK Duration",
+                value: duration,
+                inline: true
+            },
+            {
+                name: "📝 AFK Reason",
+                value: afkUser.reason,
+                inline: false
+            }
+        )
+        .setThumbnail(
+            message.author.displayAvatarURL({
+                extension: "png",
+                size: 256
+            })
+        )
+        .setFooter({
+            text: "Strive SMP • AFK System"
+        })
+        .setTimestamp();
+
+    await message.channel.send({
+        embeds: [embed]
+    });
+}
+
+
+// ==========================================
+// CHECK MENTIONED AFK USERS
+// ==========================================
+
+for (const mentionedUser of message.mentions.users.values()) {
+
+    const mentionedAFK = afkCommand.afkUsers.get(
+        mentionedUser.id
+    );
+
+    if (!mentionedAFK) continue;
+
+    mentionedAFK.mentions++;
+
+    if (!mentionedAFK.mentionUsers.includes(message.author.id)) {
+
+        mentionedAFK.mentionUsers.push(
+            message.author.id
+        );
+    }
+
+    const duration = afkCommand.formatDuration(
+        Date.now() - mentionedAFK.timestamp
+    );
+
+    const embed = new EmbedBuilder()
+        .setColor("#FAA61A")
+        .setAuthor({
+            name: `${mentionedAFK.username} is AFK`,
+            iconURL: mentionedUser.displayAvatarURL({
+                extension: "png",
+                size: 256
+            })
+        })
+        .setTitle("💤 AFK User")
+        .setDescription(
+            `<@${mentionedUser.id}> is currently AFK.`
+        )
+        .addFields(
+            {
+                name: "👤 User",
+                value: `<@${mentionedUser.id}>\n\`${mentionedAFK.username}\``,
+                inline: true
+            },
+            {
+                name: "📝 Reason",
+                value: mentionedAFK.reason,
+                inline: true
+            },
+            {
+                name: "⏱️ AFK Duration",
+                value: duration,
+                inline: true
+            },
+            {
+                name: "🔔 Mentions",
+                value: `${mentionedAFK.mentions}`,
+                inline: true
+            },
+            {
+                name: "🕐 AFK Since",
+                value: `<t:${Math.floor(mentionedAFK.timestamp / 1000)}:R>`,
+                inline: true
+            },
+            {
+                name: "📌 Status",
+                value: "💤 Currently AFK",
+                inline: true
+            }
+        )
+        .setThumbnail(
+            mentionedUser.displayAvatarURL({
+                extension: "png",
+                size: 256
+            })
+        )
+        .setFooter({
+            text: "Strive SMP • AFK System"
+        })
+        .setTimestamp();
+
+    await message.channel.send({
+        embeds: [embed]
+    });
+}
     if (!message.content.startsWith(prefix)) return;
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -219,6 +366,11 @@ client.on("messageCreate", async message => {
     else if (command === "status") {
     client.commands.get("status").execute(message);
     }
+    else if (command === "afk") {
+
+    afkCommand.execute(message, args);
+
+}
     else if (command === "ai") {
 
     const question = args.join(" ");
